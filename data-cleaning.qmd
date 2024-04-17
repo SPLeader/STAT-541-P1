@@ -4,6 +4,10 @@ format: html
 editor: visual
 ---
 
+# Summary
+
+This file contains code for additional cleaning on the Washington Post's fatal shootings data available at <https://github.com/washingtonpost/data-police-shootings>.
+
 # Setup
 
 ```{r}
@@ -104,5 +108,3 @@ shootings_clean <- shootings %>%
 shootings_clean %>% 
   write_csv(here("data", "shootings_clean.csv"))
 ```
-
-
