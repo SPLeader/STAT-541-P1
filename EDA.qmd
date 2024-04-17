@@ -1,0 +1,33 @@
+---
+title: "EDA"
+author: "Sean Leader, Rebecca Ioffe, Ashley Ibarra"
+format: html
+editor: visual
+---
+
+# Summary
+
+This file is meant to be an exploration into the different visualizations and data summaries we may want to include in our shiny app.
+
+# Setup
+
+```{r}
+#| message: false
+library(tidyverse)
+library(here)
+```
+
+```{r}
+agencies <- read_csv(here("data", "fatal-police-shootings-agencies.csv"))
+
+shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
+```
+
+```{r}
+agencies
+```
+
+```{r}
+shootings
+```
+
