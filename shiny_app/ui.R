@@ -1,1 +1,37 @@
-ui placeholder
+library(shiny)
+library(maps)
+library(mapproj)
+library(bslib)
+library(leaflet)
+source("helpers.R")
+counties <- readRDS(here::here("data/counties.rds"))
+
+# User interface ----
+ui <- page_sidebar(
+  title = "censusVis",
+  sidebar = sidebar(
+    helpText(
+      "Create demographic maps with information from the 2010 US Census."
+    ),
+    selectInput(
+      "var",
+      label = "Choose a variable to display",
+      choices =
+        c(
+          "Percent White",
+          "Percent Black",
+          "Percent Hispanic",
+          "Percent Asian"
+        ),
+      selected = "Percent White"
+    ),
+    sliderInput(
+      "range",
+      label = "Range of interest:",
+      min = 0,
+      max = 100,
+      value = c(0, 100)
+    )
+  ),
+  card(plotOutput("map"))
+)
