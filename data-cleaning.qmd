@@ -24,6 +24,31 @@ shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
 ```{r}
 shootings_clean <- shootings %>% 
   mutate(
+    # Add in threat descriptions for plotting on map
+    threat_description = case_when(
+      threat_type == "accident" ~ "Accident (more information needed)",
+      threat_type == "shoot" ~ "The victim fired a weapon.",
+      threat_type == "point" ~ "The victim pointed a weapon at another individual.",
+      threat_type == "attack" ~ "The victim attacked with other weapons or physical force.",
+      threat_type == "threat" ~ "The victim had some kind of weapon visible to the officers on the scene.",
+      threat_type == "move" ~ "The victim was moving in a threatening way.",
+      threat_type == "flee" ~ "The victim was fleeing.",
+      threat_type == "undetermined" ~ "The threat type could not be determined from available evidence.",
+      is.na(threat_type) ~ "Unknown",
+      TRUE ~ NA
+    ),
+    # Update race variable with more descriptive levels
+    race = case_when(
+      race == "A" ~ "Asian",
+      race == "B" ~ "Black",
+      race == "H" ~ "Hispanic",
+      race == "N" ~ "Native American",
+      race == "O" ~ "Other",
+      race == "W" ~ "White",
+      is.na(race) ~ "Unknown",
+      TRUE ~ NA
+    ),
+    
     involved_gun = case_when(
       # If gun is explicitly referenced, yes
       str_detect(armed_with, "gun") ~ "Yes",
@@ -74,24 +99,4 @@ shootings_clean <- shootings %>%
   
 ```
 
-
-
-
-
-```{r}
-shootings %>% 
-  filter(race %in% c("A", "B", "H", "N", "O", "W") | is.na(race)) %>% 
-  mutate(
-    race = case_when(
-      race == "A" ~ ""
-    )
-  )
-  count(race)
-```
-
-
-```{r}
-shootings %>% 
-  count(flee_status)
-```
 
