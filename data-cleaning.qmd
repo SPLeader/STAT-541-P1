@@ -80,7 +80,13 @@ shootings_clean <- shootings %>%
 
 ```{r}
 shootings %>% 
-  count(armed_with)
+  filter(race %in% c("A", "B", "H", "N", "O", "W") | is.na(race)) %>% 
+  mutate(
+    race = case_when(
+      race == "A" ~ ""
+    )
+  )
+  count(race)
 ```
 
 
