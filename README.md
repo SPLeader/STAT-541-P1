@@ -3,3 +3,6 @@ This repository contains code related to the first project in STAT 541 - Advance
 
 
 By saturday - rebecca adds visual and interactive to shiny app
+(toggle on and off individual incidents)
+(histogram, multiple visuals)
+(gun and no gun - choose variables)
