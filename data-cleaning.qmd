@@ -96,7 +96,13 @@ shootings_clean <- shootings %>%
       TRUE ~ "No"
     )
   )
-  
+```
+
+# Output
+
+```{r}
+shootings_clean %>% 
+  write_csv(here("data", "shootings_clean.csv"))
 ```
 
 
