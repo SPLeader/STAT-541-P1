@@ -24,8 +24,23 @@ shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
 ```
 
 ```{r}
+shootings
+```
+
+
+```{r}
 agencies
 ```
+
+```{r}
+shootings %>% 
+  group_by(race) %>% 
+  count(armed_with) %>% 
+  mutate(perc = round(n / sum(n) * 100, 1)) %>% 
+  filter(perc > 10) %>% 
+  mutate(perc = perc / sum(perc))
+```
+
 
 ```{r}
 shootings

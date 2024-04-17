@@ -1,0 +1,91 @@
+---
+title: "Data Cleaning"
+format: html
+editor: visual
+---
+
+# Setup
+
+```{r}
+#| message: false
+library(tidyverse)
+library(here)
+```
+
+```{r}
+#| message: false
+agencies <- read_csv(here("data", "fatal-police-shootings-agencies.csv"))
+
+shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
+```
+
+# Cleaning
+
+```{r}
+shootings_clean <- shootings %>% 
+  mutate(
+    involved_gun = case_when(
+      # If gun is explicitly referenced, yes
+      str_detect(armed_with, "gun") ~ "Yes",
+      
+      # If there is incomplete information, unknown
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      
+      # Otherwise, no
+      TRUE ~ "No"
+    ),
+    
+    involved_replica = case_when(
+      
+      # If replica is explicitly referenced, yes
+      str_detect(armed_with, "replica") ~ "Yes",
+      
+      # If there is incomplete information, unknown
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      
+      # Otherwise, no
+      TRUE ~ "No"
+    ),
+    
+    involved_knife = case_when(
+      
+      # If knife is explicitly referenced, yes
+      str_detect(armed_with, "knife") ~ "Yes",
+      
+      # If there is incomplete information, unknown
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      
+      # Otherwise, no
+      TRUE ~ "No"
+    ),
+    
+    unarmed = case_when(
+      
+      # If unarmed is explicitly referenced, yes
+      str_detect(armed_with, "unarmed") ~ "Yes",
+      
+      # If there is incomplete information, unknown
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      
+      # Otherwise, no
+      TRUE ~ "No"
+    )
+  )
+  
+```
+
+
+
+
+
+```{r}
+shootings %>% 
+  count(armed_with)
+```
+
+
+```{r}
+shootings %>% 
+  count(flee_status)
+```
+
