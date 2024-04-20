@@ -98,5 +98,3 @@ shootings_clean <- shootings %>%
   )
   
 ```
-
-

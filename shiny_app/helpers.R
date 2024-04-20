@@ -37,3 +37,8 @@ percent_map <- function(var, color, legend.title, min = 0, max = 100) {
          title = legend.title)
   
 }
+
+
+
+#create a function for a new plot
+

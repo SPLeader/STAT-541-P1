@@ -27,7 +27,6 @@ shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
 shootings
 ```
 
-
 ```{r}
 agencies
 ```
@@ -41,8 +40,6 @@ shootings %>%
   mutate(perc = perc / sum(perc))
 ```
 
-
 ```{r}
 shootings
 ```
-
