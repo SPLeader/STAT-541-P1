@@ -6,7 +6,10 @@ library(leaflet)
 source("helpers.R")
 counties <- readRDS(here::here("data/counties.rds"))
 
+
+
 # User interface ----
+
 ui <- page_sidebar(
   title = "censusVis",
   sidebar = sidebar(
@@ -31,7 +34,8 @@ ui <- page_sidebar(
       min = 0,
       max = 100,
       value = c(0, 100)
-    )
+    ), 
+
   ),
-  card(plotOutput("map"))
+  card(leafletOutput("map"))
 )

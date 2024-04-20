@@ -39,6 +39,32 @@ percent_map <- function(var, color, legend.title, min = 0, max = 100) {
 }
 
 
-
-#create a function for a new plot
+addToggleMarkers <- function(map, shootings) {
+  observe({
+    
+    map$clearMarkers()
+  for (i in 1:nrow(shootings)) {
+    
+    shooting <- shootings[i, ]
+    map$addCircleMarkers(
+      lng = shooting$longitude, 
+      lat = shooting$latitiude, 
+      radius = 5, 
+      color = "red", 
+      fillOpacity = 0.8,
+      popup = paste(
+        "ID: ", shooting$id, "<br>",
+        "Threat Type: ", shooting$threat_type, "<br>",
+        "County: ", shooting$county, "<br>",
+        "Flee Status: ", shooting$flee_status
+    )
+    
+    )
+    
+    
+  }
+    
+    
+  })
+}
 
