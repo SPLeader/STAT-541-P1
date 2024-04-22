@@ -23,9 +23,29 @@ full_data <- spData::us_states %>%
 
 # Server logic
 server <- function(input, output) {
+
+  
+  output$barplot <- renderPlot({
+    filtered_data <- subset(shootings, year == input$year)
+    if (input$race != "All") {
+      filtered_data <- subset(filtered_data, race == input$race)
+    }
+    
+    # Aggregate data by state
+    aggregated_data <- aggregate(id ~ state, data = filtered_data, FUN = sum)
+    
+    # Calculate the top states based on the number selected by the user
+    top_states <- head(aggregated_data[order(aggregated_data$id, decreasing = TRUE), ], input$top_states)
+    
+    ggplot(top_states, aes(x = state, y = id, fill = state)) +
+      geom_bar(stat = "identity") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      labs(title = paste("Top", input$top_states, "States with Most Shooting Incidents in", input$year),
+           x = "State", y = "Number of Incidents", fill = "State")
+  })
   
   
-  map_df = reactive({
+    map_df = reactive({
 
     shootings_sample %>%
       mutate(valid_shooting = rowSums(across(all_of(input$weapon)))) %>% 

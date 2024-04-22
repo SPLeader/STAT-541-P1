@@ -7,6 +7,11 @@ ui <- fluidPage(
   titlePanel("Interactive Leaflet Plot"),
   sidebarLayout(
     sidebarPanel(
+      
+      selectInput("year", "Select Year:", choices = unique(shootings$year)),
+      selectInput("race", "Select Race:", choices = c("All", unique(shootings$race))),
+      sliderInput("top_states", "Number of Top States to Display:", min = 5, max = 25, value = 5),
+      
       checkboxGroupInput(
         "weapon",
         "Select all that apply",
@@ -18,7 +23,8 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      leafletOutput("map")
+      leafletOutput("map"),
+      plotOutput("barplot")
     )
   )
 )
