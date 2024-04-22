@@ -20,7 +20,7 @@ library(here)
 ```{r}
 agencies <- read_csv(here("data", "fatal-police-shootings-agencies.csv"))
 
-shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
+shootings <- read_csv(here("data", "shootings_clean.csv"))
 ```
 
 ```{r}

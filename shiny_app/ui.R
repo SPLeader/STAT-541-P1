@@ -1,20 +1,20 @@
 library(shiny)
-library(maps)
-library(mapproj)
 library(bslib)
 library(leaflet)
-source("helpers.R")
-counties <- readRDS(here::here("data/counties.rds"))
 
 # UI definition (remains unchanged)
 ui <- fluidPage(
   titlePanel("Interactive Leaflet Plot"),
   sidebarLayout(
     sidebarPanel(
-      selectInput(
-        "dataset",
-        "Choose Dataset:",
-        choices = c("Cities", "Volcanoes")
+      checkboxGroupInput(
+        "weapon",
+        "Select all that apply",
+        choices = list("Gun" = "involved_gun", 
+                       "Knife" = "involved_knife", 
+                       "Replica" = "involved_replica", 
+                       "Unarmed" = "unarmed"),
+        selected = 1
       )
     ),
     mainPanel(
