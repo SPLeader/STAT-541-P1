@@ -1,27 +1,29 @@
 library(shiny)
-library(maps)
-library(mapproj)
-counties <- readRDS(here::here("data/counties.rds"))
+library(leaflet)
+library(tidyverse)
+library(here)
+
+shootings <- read_csv(here("data", "fatal-police-shootings-data.csv")) %>% 
+  drop_na(longitude, latitude, name) %>% 
+  group_by(state) %>% 
+  sample_frac(0.1) %>% 
+  ungroup()
+
+
+
+# Server logic
 server <- function(input, output) {
-  output$map <- renderPlot({
-    data <- switch(input$var,
-                   "Percent White" = counties$white,
-                   "Percent Black" = counties$black,
-                   "Percent Hispanic" = counties$hispanic,
-                   "Percent Asian" = counties$asian)
-    
-    color <- switch(input$var,
-                    "Percent White" = "darkgreen",
-                    "Percent Black" = "black",
-                    "Percent Hispanic" = "darkorange",
-                    "Percent Asian" = "darkviolet")
-    
-    legend <- switch(input$var,
-                     "Percent White" = "% White",
-                     "Percent Black" = "% Black",
-                     "Percent Hispanic" = "% Hispanic",
-                     "Percent Asian" = "% Asian")
-    
-    percent_map(data, color, legend, input$range[1], input$range[2])
+  
+
+  
+  # Render leaflet map based on selection
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>% # Add base tiles
+      addCircleMarkers(data = shootings, 
+                 clusterOptions = markerClusterOptions(), 
+                 lng = ~longitude, 
+                 lat = ~latitude, 
+                 popup = ~name)
   })
 }
