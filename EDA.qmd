@@ -20,7 +20,7 @@ library(here)
 ```{r}
 agencies <- read_csv(here("data", "fatal-police-shootings-agencies.csv"))
 
-shootings <- read_csv(here("data", "fatal-police-shootings-data.csv"))
+shootings <- read_csv(here("data", "shootings_clean.csv"))
 ```
 
 ```{r}
@@ -29,8 +29,31 @@ shootings
 
 
 ```{r}
-agencies
+state_info <- data.frame(
+  NAME = state.name,
+  state = state.abb
+)
+
+full_data <- spData::us_states %>% 
+  select(-geometry) %>% 
+  inner_join(state_info, by = "NAME") %>% 
+  inner_join(shootings, by = "state")
 ```
+
+
+```{r}
+full_data %>% 
+  group_by(state) %>% 
+  count() %>% 
+  rename(num_shootings = n) %>% 
+  ungroup() %>% 
+  inner_join(full_data, by = "state") %>% 
+  mutate(shootings_per_capita = num_shootings / total_pop_15) %>% 
+  distinct(state, shootings_per_capita) %>% 
+  ggplot(aes(x = shootings_per_capita * 10000)) + 
+  geom_histogram()
+```
+
 
 ```{r}
 shootings %>% 
@@ -41,8 +64,6 @@ shootings %>%
   mutate(perc = perc / sum(perc))
 ```
 
-
 ```{r}
 shootings
 ```
-

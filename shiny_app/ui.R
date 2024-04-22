@@ -1,37 +1,24 @@
 library(shiny)
-library(maps)
-library(mapproj)
 library(bslib)
 library(leaflet)
-source("helpers.R")
-counties <- readRDS(here::here("data/counties.rds"))
 
-# User interface ----
-ui <- page_sidebar(
-  title = "censusVis",
-  sidebar = sidebar(
-    helpText(
-      "Create demographic maps with information from the 2010 US Census."
+# UI definition (remains unchanged)
+ui <- fluidPage(
+  titlePanel("Interactive Leaflet Plot"),
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput(
+        "weapon",
+        "Select all that apply",
+        choices = list("Gun" = "involved_gun", 
+                       "Knife" = "involved_knife", 
+                       "Replica" = "involved_replica", 
+                       "Unarmed" = "unarmed"),
+        selected = 1
+      )
     ),
-    selectInput(
-      "var",
-      label = "Choose a variable to display",
-      choices =
-        c(
-          "Percent White",
-          "Percent Black",
-          "Percent Hispanic",
-          "Percent Asian"
-        ),
-      selected = "Percent White"
-    ),
-    sliderInput(
-      "range",
-      label = "Range of interest:",
-      min = 0,
-      max = 100,
-      value = c(0, 100)
+    mainPanel(
+      leafletOutput("map")
     )
-  ),
-  card(plotOutput("map"))
+  )
 )
