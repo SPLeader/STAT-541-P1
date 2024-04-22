@@ -27,9 +27,19 @@ shootings <- read_csv(here("data", "shootings_clean.csv"))
 shootings
 ```
 
+
 ```{r}
-agencies
+state_info <- data.frame(
+  NAME = state.name,
+  state = state.abb
+)
+
+full_data <- spData::us_states %>% 
+  select(-geometry) %>% 
+  inner_join(state_info, by = "NAME") %>% 
+  inner_join(shootings, by = "state")
 ```
+
 
 ```{r}
 shootings %>% 
