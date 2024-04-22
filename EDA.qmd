@@ -42,6 +42,20 @@ full_data <- spData::us_states %>%
 
 
 ```{r}
+full_data %>% 
+  group_by(state) %>% 
+  count() %>% 
+  rename(num_shootings = n) %>% 
+  ungroup() %>% 
+  inner_join(full_data, by = "state") %>% 
+  mutate(shootings_per_capita = num_shootings / total_pop_15) %>% 
+  distinct(state, shootings_per_capita) %>% 
+  ggplot(aes(x = shootings_per_capita * 10000)) + 
+  geom_histogram()
+```
+
+
+```{r}
 shootings %>% 
   group_by(race) %>% 
   count(armed_with) %>% 
