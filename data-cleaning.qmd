@@ -53,7 +53,7 @@ shootings_clean <- shootings %>%
       TRUE ~ NA
     ),
     
-    involved_gun = case_when(
+    gun = case_when(
       # If gun is explicitly referenced, yes
       str_detect(armed_with, "gun") ~ TRUE,
       
@@ -64,7 +64,7 @@ shootings_clean <- shootings %>%
       TRUE ~ FALSE
     ),
     
-    involved_replica = case_when(
+    replica = case_when(
       
       # If replica is explicitly referenced, yes
       str_detect(armed_with, "replica") ~ TRUE,
@@ -76,7 +76,7 @@ shootings_clean <- shootings %>%
       TRUE ~ FALSE
     ),
     
-    involved_knife = case_when(
+    knife = case_when(
       
       # If knife is explicitly referenced, yes
       str_detect(armed_with, "knife") ~ TRUE,

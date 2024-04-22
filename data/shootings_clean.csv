@@ -1,4 +1,4 @@
-id,date,threat_type,flee_status,armed_with,city,county,state,latitude,longitude,location_precision,name,age,gender,race,race_source,was_mental_illness_related,body_camera,agency_ids,threat_description,involved_gun,involved_replica,involved_knife,unarmed
+id,date,threat_type,flee_status,armed_with,city,county,state,latitude,longitude,location_precision,name,age,gender,race,race_source,was_mental_illness_related,body_camera,agency_ids,threat_description,gun,replica,knife,unarmed
 3,2015-01-02,point,not,gun,Shelton,Mason,WA,47.246826,-123.121592,not_available,Tim Elliot,53,male,Asian,not_available,TRUE,FALSE,73,The victim pointed a weapon at another individual.,TRUE,FALSE,FALSE,FALSE
 4,2015-01-02,point,not,gun,Aloha,Washington,OR,45.4874214,-122.8916961,not_available,Lewis Lee Lembke,47,male,White,not_available,FALSE,FALSE,70,The victim pointed a weapon at another individual.,TRUE,FALSE,FALSE,FALSE
 5,2015-01-03,move,not,unarmed,Wichita,Sedgwick,KS,37.694766,-97.280554,not_available,John Paul Quintero,23,male,Hispanic,not_available,FALSE,FALSE,238,The victim was moving in a threatening way.,FALSE,FALSE,FALSE,TRUE
