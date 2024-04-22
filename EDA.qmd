@@ -27,7 +27,6 @@ shootings <- read_csv(here("data", "shootings_clean.csv"))
 shootings
 ```
 
-
 ```{r}
 state_info <- data.frame(
   NAME = state.name,
@@ -39,7 +38,6 @@ full_data <- spData::us_states %>%
   inner_join(state_info, by = "NAME") %>% 
   inner_join(shootings, by = "state")
 ```
-
 
 ```{r}
 full_data %>% 
@@ -53,7 +51,6 @@ full_data %>%
   ggplot(aes(x = shootings_per_capita * 10000)) + 
   geom_histogram()
 ```
-
 
 ```{r}
 shootings %>% 

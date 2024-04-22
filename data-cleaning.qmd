@@ -55,49 +55,49 @@ shootings_clean <- shootings %>%
     
     involved_gun = case_when(
       # If gun is explicitly referenced, yes
-      str_detect(armed_with, "gun") ~ "Yes",
+      str_detect(armed_with, "gun") ~ TRUE,
       
       # If there is incomplete information, unknown
-      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ NA,
       
       # Otherwise, no
-      TRUE ~ "No"
+      TRUE ~ FALSE
     ),
     
     involved_replica = case_when(
       
       # If replica is explicitly referenced, yes
-      str_detect(armed_with, "replica") ~ "Yes",
+      str_detect(armed_with, "replica") ~ TRUE,
       
       # If there is incomplete information, unknown
-      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ NA,
       
       # Otherwise, no
-      TRUE ~ "No"
+      TRUE ~ FALSE
     ),
     
     involved_knife = case_when(
       
       # If knife is explicitly referenced, yes
-      str_detect(armed_with, "knife") ~ "Yes",
+      str_detect(armed_with, "knife") ~ TRUE,
       
       # If there is incomplete information, unknown
-      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ NA,
       
       # Otherwise, no
-      TRUE ~ "No"
+      TRUE ~ FALSE
     ),
     
     unarmed = case_when(
       
       # If unarmed is explicitly referenced, yes
-      str_detect(armed_with, "unarmed") ~ "Yes",
+      str_detect(armed_with, "unarmed") ~ TRUE,
       
       # If there is incomplete information, unknown
-      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ "Unknown",
+      is.na(armed_with) | armed_with %in% c("undetermined", "unknown") ~ NA,
       
       # Otherwise, no
-      TRUE ~ "No"
+      TRUE ~ FALSE
     )
   )
 ```

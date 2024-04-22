@@ -7,15 +7,7 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
   drop_na(longitude, latitude, name) %>% 
   group_by(state) %>% 
   sample_frac(0.1) %>% 
-  ungroup() %>% 
-  mutate(involved_gun = case_when(involved_gun == "Yes" ~ TRUE,
-                         TRUE ~ FALSE),
-         involved_knife = case_when(involved_knife == "Yes" ~ TRUE,
-                                  TRUE ~ FALSE),
-         involved_replica = case_when(involved_replica == "Yes" ~ TRUE,
-                                    TRUE ~ FALSE),
-         unarmed = case_when(unarmed == "Yes" ~ TRUE,
-                             TRUE ~ FALSE))
+  ungroup() 
 
 is_true <- function(x) {
   return(x == TRUE)
