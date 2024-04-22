@@ -10,9 +10,9 @@ ui <- fluidPage(
       checkboxGroupInput(
         "weapon",
         "Select all that apply",
-        choices = list("Gun" = "involved_gun", 
-                       "Knife" = "involved_knife", 
-                       "Replica" = "involved_replica", 
+        choices = list("Gun" = "gun", 
+                       "Knife" = "knife", 
+                       "Replica" = "replica", 
                        "Unarmed" = "unarmed"),
         selected = 1
       )

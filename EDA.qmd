@@ -15,6 +15,7 @@ This file is meant to be an exploration into the different visualizations and da
 #| message: false
 library(tidyverse)
 library(here)
+library(sf)
 ```
 
 ```{r}
@@ -34,9 +35,35 @@ state_info <- data.frame(
 )
 
 full_data <- spData::us_states %>% 
-  select(-geometry) %>% 
   inner_join(state_info, by = "NAME") %>% 
   inner_join(shootings, by = "state")
+```
+
+```{r}
+full_data
+```
+
+```{r}
+geometry <- spData::us_states$geometry
+```
+
+```{r}
+full_data %>%
+      mutate(valid_shooting = rowSums(across(all_of(c("gun"))))) %>% 
+      filter(valid_shooting >= 1) %>% 
+      group_by(state) %>% 
+      mutate(shoot_per_cap = n() / total_pop_15) %>% 
+      ungroup() %>% 
+      distinct(state, shoot_per_cap, geometry)
+```
+
+```{r}
+full_data %>%
+      mutate(valid_shooting = rowSums(across(all_of(c("gun"))))) %>% 
+      filter(valid_shooting >= 1) %>% 
+      group_by(state) %>% 
+      mutate(shoot_per_cap = n() / total_pop_15) %>% 
+      ungroup()
 ```
 
 ```{r}
