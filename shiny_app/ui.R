@@ -1,16 +1,24 @@
 library(shiny)
 library(bslib)
 library(leaflet)
+library(dplyr)
+library(ggplot2)
 
 # UI definition (remains unchanged)
 ui <- fluidPage(
-  titlePanel("Interactive Leaflet Plot"),
+  titlePanel(title="Fatal Police Shootings (since 1/1/2015)", windowTitle="Fatal Police Shootings"),
+  h6("Data source: ", a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", "The Washington Post")),
+  
   sidebarLayout(
     sidebarPanel(
       
-      selectInput("year", "Select Year:", choices = unique(shootings$year)),
+
+      sliderInput("year", "Select Year:", min = min(as.numeric(shootings$year)), 
+                  max = max(as.numeric(shootings$year)), value = min(shootings$year), step = 1),
+      selectInput("state", "Select State:", choices = c("All", unique(shootings$state))),
+      
       selectInput("race", "Select Race:", choices = c("All", unique(shootings$race))),
-      sliderInput("top_states", "Number of Top States to Display:", min = 5, max = 25, value = 5),
+      
       
       checkboxGroupInput(
         "weapon",
@@ -23,8 +31,9 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      leafletOutput("map"),
-      plotOutput("barplot")
+     plotOutput("racePlot"),
+     plotOutput("bodyCamPlot"),
+     leafletOutput("map")
     )
   )
 )

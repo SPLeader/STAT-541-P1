@@ -3,9 +3,12 @@ library(leaflet)
 library(tidyverse)
 library(here)
 library(sf)
+library(dplyr)
+library(ggplot2)
 
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
   drop_na(longitude, latitude, name) 
+shootings$year <- format(as.Date(shootings$date, format="%d/%m/%Y"),"%Y")
 
 shootings_sample  <- shootings %>% 
   group_by(state) %>% 
@@ -25,25 +28,49 @@ full_data <- spData::us_states %>%
 server <- function(input, output) {
 
   
-  output$barplot <- renderPlot({
-    filtered_data <- subset(shootings, year == input$year)
-    if (input$race != "All") {
-      filtered_data <- subset(filtered_data, race == input$race)
+  # Render the race breakdown plot
+  output$racePlot <- renderPlot({
+    if(input$state != "All") {
+      filtered_data <- filter(shootings, year == input$year, state == input$state)
+    } else {
+      filtered_data <- filter(shootings, year == input$year)
     }
-    
-    # Aggregate data by state
-    aggregated_data <- aggregate(id ~ state, data = filtered_data, FUN = sum)
-    
-    # Calculate the top states based on the number selected by the user
-    top_states <- head(aggregated_data[order(aggregated_data$id, decreasing = TRUE), ], input$top_states)
-    
-    ggplot(top_states, aes(x = state, y = id, fill = state)) +
-      geom_bar(stat = "identity") +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      labs(title = paste("Top", input$top_states, "States with Most Shooting Incidents in", input$year),
-           x = "State", y = "Number of Incidents", fill = "State")
+    race_counts <- table(filtered_data$race)
+    barplot(race_counts, main = "Fatal Shootings by Race", xlab = "Race", ylab = "Count", 
+            col = )
   })
   
+  
+  # render the body cam plot
+  filtered_data <- reactive({
+    data <- shootings
+    if(input$state != "All") {
+      data <- filter(data, state == input$state)
+    }
+    if(input$race != "All") {
+      data <- filter(data, race == input$race)
+    }
+    data
+  })
+  
+  # Render the body cam presence plot
+  output$bodyCamPlot <- renderPlot({
+    # Group by year and body camera presence, and calculate counts
+    plot_data <- filtered_data() %>%
+      group_by(year, body_camera) %>%
+      summarise(count = n())
+    
+    # Plotting
+    ggplot(plot_data, aes(x = year, y = count, group = body_camera, color = body_camera)) +
+      geom_line(size = 1) +
+      labs(x = "Year", y = "Count of Body Cameras", color = "Body Camera Presence",
+           title = "Count of Body Cameras in Fatal Police Shootings Over the Years") +
+      theme_minimal()
+  })
+  
+  
+  
+  # start leaflet plot
   
     map_df = reactive({
 
