@@ -66,9 +66,36 @@ server <- function(input, output) {
     } else {
       filtered_data <- filter(shootings, year == input$year)
     }
-    race_counts <- table(filtered_data$race)
-    barplot(race_counts, main = "Fatal Shootings by Race", xlab = "Race", ylab = "Count", 
-            col = )
+    
+    filtered_data %>%
+      
+      # Add custom descriptions for legend
+      mutate(Weapon = case_when(
+        gun ~ "Gun Involved",
+        !gun ~ "No Gun Involved",
+        is.na(gun) ~ "Unknown"
+      )) %>% 
+      
+      # Cross-tabulate race and weapon counts
+      count(race, Weapon) %>% 
+      
+      # Create segmented bar chart by race and weapon
+      ggplot(aes(
+        x = fct_reorder(race, n), 
+        y = n, 
+        fill = Weapon
+      )) + 
+      
+      # Specify bar chart
+      geom_col() +
+      
+      # Add axis labels
+      labs(
+        x = "Race of Victim",
+        y = "",
+        title = "Observed Number of Fatal Shootings by Race",
+        fill = ""
+      )
   })
   
   
