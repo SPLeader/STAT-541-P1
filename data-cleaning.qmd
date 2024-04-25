@@ -108,4 +108,3 @@ shootings_clean <- shootings %>%
 shootings_clean %>% 
   write_csv(here("data", "shootings_clean.csv"))
 ```
-

@@ -57,7 +57,8 @@ selecteddf <- shootings %>%
          gun,
          replica,
          knife,
-         unarmed
+         unarmed, 
+         threat_description
   )
 
 # Server logic
@@ -289,17 +290,20 @@ server <- function(input, output) {
     selected <- input$variable
   
 
-    #if numerical variables age is selected, perform numerical summary
+    #if numerical variables age is selected, perform numerical five number summary
     
     if(selected %in% c("age"))
       
     {
       summary <- selecteddf %>%
         summarize(`Mean Age` = mean(age, na.rm = TRUE),
-                  `SD Age` = sd(age, na.rm = TRUE))
+                  `SD Age` = sd(age, na.rm = TRUE), 
+                  `IQR Age` = IQR(age, na.rm = TRUE), 
+                  `Min. Age` = min(age, na.rm = TRUE),
+                  `Max. Age`= max(age, na.rm = TRUE))
     }
 
-  
+
     #if categorical variables are selected perform categorical summary
 
     else 
@@ -311,7 +315,7 @@ server <- function(input, output) {
         mutate(freq = n/sum(n))
       
       summary <- as.data.frame(summary)
-      colnames(summary) <- c(selected, "Count", "Frequency")
+      colnames(summary) <- c(selected, "Count", "Percent of Total")
       
       
     }

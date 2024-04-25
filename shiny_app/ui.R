@@ -106,7 +106,8 @@ ui <- page_fillable(
                    "Gun" = "gun",
                    "Replica" = "replica",
                    "Knife" = "knife",
-                   "Unarmed" = "unarmed"), 
+                   "Unarmed" = "unarmed", 
+                   "Threat Description" = "threat_description"), 
             selected = 1
          )
          
