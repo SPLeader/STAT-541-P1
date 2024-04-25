@@ -95,7 +95,8 @@ ui <- page_fillable(
   
    card(
      min_height = 600,
-    card_header("Summary Table"), 
+    card_header("Overall Summary Table for Selected Variable"), 
+
     layout_sidebar(
       sidebar = sidebar(
         selectInput(
@@ -113,8 +114,9 @@ ui <- page_fillable(
                    "Knife" = "knife",
                    "Unarmed" = "unarmed", 
                    "Threat Description" = "threat_description"), 
-            selected = 1
-         )
+            selected = 1 ),
+            helpText("Note: Other selected varaibles do not change current selection")
+         
          
         ),
     
