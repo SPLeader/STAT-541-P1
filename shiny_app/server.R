@@ -5,6 +5,7 @@ library(here)
 library(sf)
 library(dplyr)
 library(ggplot2)
+library(DT)
 
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
   drop_na(longitude, latitude, name) 
@@ -95,6 +96,52 @@ server <- function(input, output) {
       distinct(NAME, shoot_per_cap, geometry)
   })
   
+  
+  widget_tbl = reactive({
+    selected <- input$variable
+    selecteddf <- shootings %>%
+      select(threat_type,
+             flee_status,
+             armed_with,
+             city,
+             state,
+             county,
+             age,
+             gender,
+             race,
+             was_mental_illness_related,
+             body_camera,
+             gun,
+             replica,
+             knife,
+             unarmed, 
+      )
+    
+    if(selected %in% c("threat_type", "flee_status", "armed_with", "city", "state", "county", "gender", "race"))
+      
+    {
+      summary <- selecteddf %>%
+        group_by(!!sym(selected)) %>%
+        summarise(n = n()) %>%
+        mutate(freq = n/sum(n))
+      
+    }
+    
+    
+    else {
+      summary <- selecteddf %>%
+        summarise(across(
+          .cols = selected, 
+          .fns = list(Mean = mean, SD = sd), na.rm = TRUE
+        ))
+      
+    }
+    
+    summary <- data.frame(summary)
+    return(summary)
+    
+  })
+  
   # Render leaflet map based on selection
   output$map <- renderLeaflet({
     
@@ -133,6 +180,18 @@ server <- function(input, output) {
                                                       weight = 2,
                                                       bringToFront = TRUE))
   })
+  
+  output$table <- renderDataTable({
+    datatable(widget_tbl)} 
+    
+    # row.name = TRUE, 
+    # digits = 2, 
+    # striped = TRUE, 
+    # bordered = TRUE, 
+    # hover = TRUE
+    
+  )
+  
   
   
 }

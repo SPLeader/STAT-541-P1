@@ -33,11 +33,42 @@ ui <- fluidPage(
                        "Unarmed" = "unarmed"),
         selected = 1
       )
-    ),
+    ,
+    
+    tabPanel(
+      "Variable Selection",
+      selectInput(
+        "variable",
+        "Select variable to summarize:",
+        choices = c(
+          "Threat Type" = "threat_type",
+          "Flee Status" = "flee_status",
+          "Armed With" = "armed_with",
+          "City" = "city",
+          "State" = "state",
+          "County" = "county",
+          "Age" = "age",
+          "Gender" = "gender",
+          "Race" = "race",
+          "Mental Illness Related" = "was_mental_illness_related",
+          "Body Camera" = "body_camera",
+          "Gun" = "gun",
+          "Replica" = "replica",
+          "Knife" = "knife",
+          "Unarmed" = "unarmed"
+        ),
+        selected = 1
+      )
+    )
+    
+    )
+  
+    
     mainPanel(
      plotOutput("racePlot"),
      plotOutput("bodyCamPlot"),
-     leafletOutput("map")
+     leafletOutput("map"), 
+     tableOutput("table")
     )
   )
 )
