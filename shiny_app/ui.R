@@ -2,7 +2,11 @@ library(shiny)
 library(bslib)
 library(leaflet)
 library(dplyr)
-library(ggplot2)
+library(tidyverse)
+library(here)
+
+shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
+  drop_na(longitude, latitude, name) 
 
 # UI definition (remains unchanged)
 ui <- fluidPage(

@@ -8,6 +8,7 @@ library(ggplot2)
 
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
   drop_na(longitude, latitude, name) 
+
 shootings$year <- format(as.Date(shootings$date, format="%d/%m/%Y"),"%Y")
 
 shootings_sample  <- shootings %>% 
