@@ -70,12 +70,12 @@ ui <- page_fillable(
   column(
     width = 6, 
     card(
-    card_header("Leaflet Plot"),
+    card_header("Map of Fatal Shootings across the United States in selected year"),
     layout_sidebar(
       sidebar = sidebar(
         checkboxGroupInput(
           "weapon",
-          "Select all that apply",
+          "Select weapons of interest",
           choices = list("Gun" = "gun", 
                          "Knife" = "knife", 
                          "Replica" = "replica", 
