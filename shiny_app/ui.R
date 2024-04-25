@@ -23,8 +23,10 @@ ui <- page_fillable(
   h6("Data source: ", 
      a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
        "The Washington Post")),
-  
-  card(
+  fluidRow(
+    column(
+      width = 8, 
+   card(
     card_header("Race and Weapon"),
     layout_sidebar(
       sidebar = sidebar(
@@ -60,11 +62,13 @@ ui <- page_fillable(
       plotOutput("bodyCamPlot"),
       plotOutput("racePlot")
     )
-    
-    
+   )
+   
   ),
   
-  card(
+  column(
+    width = 4, 
+    card(
     card_header("Leaflet Plot"),
     layout_sidebar(
       sidebar = sidebar(
@@ -80,12 +84,10 @@ ui <- page_fillable(
       ),
       leafletOutput("map")
     )
-    
-  ), 
+   
+ ), 
   
-  
-  tabPanel("Summary Table",
-  card(
+   card(
     card_header("Summary Table"), 
     layout_sidebar(
       sidebar = sidebar(
@@ -115,9 +117,11 @@ ui <- page_fillable(
     
       tableOutput("table") 
 
-    ) 
+      ) 
+     )
+    )
   )
-))
+)
   
 
   

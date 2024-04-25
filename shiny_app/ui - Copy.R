@@ -30,7 +30,6 @@ ui <- fluidPage(
       width = 4, 
   sidebarLayout(
     sidebarPanel(
-      
       selectInput(
         "year", 
         "Select Year:", 
@@ -73,14 +72,13 @@ ui <- fluidPage(
       ),
      leafletOutput("map"), 
     )
-  )
+   )
   ),
   
   column(
     width = 8,
   sidebarLayout(
     sidebarPanel(
-      
       checkboxGroupInput(
         "weapon",
         "Select all that apply",
@@ -129,12 +127,9 @@ ui <- fluidPage(
       card_header("Summary Table"),
       tableOutput("table")
       
+       )
+      )
     )
-    
-    
-    )
-  )
-  )
   )
 )
 
