@@ -5,7 +5,7 @@ library(here)
 library(sf)
 library(dplyr)
 library(ggplot2)
-library(DT)
+
 
 
 
@@ -43,23 +43,6 @@ full_data <- spData::us_states %>%
   
   # Add in shootings data
   inner_join(shootings, by = "state")
-
-# Get particular data for table widget
-selecteddf <- shootings %>%
-  select(threat_type,
-         flee_status,
-         armed_with,
-         age,
-         gender,
-         race,
-         was_mental_illness_related,
-         body_camera,
-         gun,
-         replica,
-         knife,
-         unarmed, 
-         threat_description
-  )
 
 # Server logic
 server <- function(input, output) {
@@ -298,7 +281,7 @@ server <- function(input, output) {
     if(selected %in% c("age"))
       
     {
-      summary <- selecteddf %>%
+      summary <- shootings %>%
         summarize(`Mean Age` = mean(age, na.rm = TRUE),
                   `SD Age` = sd(age, na.rm = TRUE), 
                   `IQR Age` = IQR(age, na.rm = TRUE), 
@@ -308,11 +291,12 @@ server <- function(input, output) {
 
 
     #if categorical variables are selected perform categorical summary
+    # return count and percent of total 
 
     else 
       
     {
-      summary <- selecteddf %>%
+      summary <- shootings %>%
         group_by(!!sym(selected)) %>%
         summarise(n = n()) %>%
         mutate(freq = n/sum(n))
@@ -326,6 +310,9 @@ server <- function(input, output) {
     return(summary)
 
   })
+  
+  #widget table output for summary statistics
+  #formatting: adding stripes, hover, rounding digits to 2
   
   output$table <- renderTable({
   

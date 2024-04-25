@@ -19,6 +19,9 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
 ui <- page_fillable(
   
   title = "Fatal Police Shootings (since 1/1/2015)",
+  theme = bs_theme(preset = "lux"),
+  
+  #add theme and reference data source
   
   h6("Data source: ", 
      a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
@@ -96,9 +99,7 @@ ui <- page_fillable(
           "variable", 
           "Variable Selection", 
           choices = list(
-                   "Threat Type" = "threat_type",
                    "Flee Status" = "flee_status",
-                   "Armed With" = "armed_with",
                    "Age" = "age",
                    "Gender" = "gender",
                    "Race" = "race",
