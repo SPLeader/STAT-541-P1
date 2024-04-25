@@ -161,7 +161,9 @@ server <- function(input, output) {
         x = "Year", 
         y = "",
         color = "Body Camera Presence",
-        title = str_c("Number of Fatal Police Shootings in ", input$state)) +
+        title = str_c("Number of Fatal Police Shootings in ", input$state),
+        subtitle = str_c("Filtered to only ", input$race, " victims")
+        ) +
       theme_minimal() +
       scale_color_manual(values = c("red", "blue")) 
   },
