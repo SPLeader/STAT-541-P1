@@ -23,10 +23,34 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       
-      selectInput("year", "Select Year:", choices = seq(min(shootings$year), max(shootings$year))),
-      selectInput("state", "Select State:", choices = c("All", unique(shootings$state))),
-
-      selectInput("race", "Select Race:", choices = c("All", unique(shootings$race))),
+      selectInput(
+        "year", 
+        "Select Year:", 
+        choices = seq(
+          min(shootings$year), 
+          max(shootings$year)
+          )
+        ),
+      
+      selectInput(
+        "state", 
+        "Select State:",
+        choices = c(
+          "All",
+          sort(
+            unique(shootings$state)
+            )
+          )
+        ),
+      
+      selectInput(
+        "race", 
+        "Select Race:",
+        choices = c(
+          "All", 
+          unique(shootings$race)
+          )
+        ),
 
       
       checkboxGroupInput(

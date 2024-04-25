@@ -165,8 +165,7 @@ server <- function(input, output) {
       ggplot(
         aes(
           x = year, 
-          y = count, 
-          group = body_camera, 
+          y = count,  
           color = body_camera)) +
       geom_line(size = 1) +
       labs(
