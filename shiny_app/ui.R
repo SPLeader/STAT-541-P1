@@ -31,6 +31,7 @@ ui <- page_fillable(
     column(
       width = 6, 
    card(
+     min_height = 1200,
     card_header("Race and Weapon"),
     layout_sidebar(
       sidebar = sidebar(
@@ -73,6 +74,7 @@ ui <- page_fillable(
   column(
     width = 6, 
     card(
+      min_height = 600,
     card_header("Map of Fatal Shootings across the United States in selected year"),
     layout_sidebar(
       sidebar = sidebar(
@@ -92,6 +94,7 @@ ui <- page_fillable(
  ), 
   
    card(
+     min_height = 600,
     card_header("Summary Table"), 
     layout_sidebar(
       sidebar = sidebar(
