@@ -112,7 +112,9 @@ server <- function(input, output) {
       labs(
         x = "Race of Victim",
         y = "",
-        title = "Observed Number of Fatal Shootings by Race",
+        title = str_c("Observed Number of Fatal Shootings by Race (", 
+                      input$year,
+                      ")"),
         fill = ""
       ) +
       scale_fill_brewer(palette = "Set2")
@@ -168,11 +170,12 @@ server <- function(input, output) {
       geom_line(size = 1) +
       scale_x_continuous(breaks = seq(min(plot_data$year), 
                                       max(plot_data$year), by = 1)) +
+      geom_vline(xintercept = as.numeric(input$year)) +
       labs(
         x = "Year", 
         y = "",
         color = "Body Camera Presence",
-        title = "Body Cameras in Fatal Police Shootings Between 2015-2024") +
+        title = str_c("Number of Fatal Police Shootings in ", input$state)) +
       theme_minimal() +
       scale_color_manual(values = c("red", "blue")) 
   },

@@ -23,9 +23,10 @@ ui <- page_fillable(
   h6("Data source: ", 
      a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
        "The Washington Post")),
+  
   fluidRow(
     column(
-      width = 4, 
+      width = 6, 
    card(
     card_header("Race and Weapon"),
     layout_sidebar(
@@ -67,7 +68,7 @@ ui <- page_fillable(
   ),
   
   column(
-    width = 8, 
+    width = 6, 
     card(
     card_header("Leaflet Plot"),
     layout_sidebar(
