@@ -25,6 +25,9 @@ ui <- fluidPage(
      a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
        "The Washington Post")),
   
+  fluidRow(
+    column(
+      width = 4, 
   sidebarLayout(
     sidebarPanel(
       
@@ -56,35 +59,7 @@ ui <- fluidPage(
           unique(shootings$race)
           )
         ),
-
-
     
-    
-    # tabPanel(
-    #   "Variable Selection",
-    #   selectInput(
-    #     "variable",
-    #     "Select variable to summarize:",
-    #     choices = c(
-    #       "Threat Type" = "threat_type",
-    #       "Flee Status" = "flee_status",
-    #       "Armed With" = "armed_with",
-    #       "City" = "city",
-    #       "State" = "state",
-    #       "County" = "county",
-    #       "Age" = "age",
-    #       "Gender" = "gender",
-    #       "Race" = "race",
-    #       "Mental Illness Related" = "was_mental_illness_related",
-    #       "Body Camera" = "body_camera",
-    #       "Gun" = "gun",
-    #       "Replica" = "replica",
-    #       "Knife" = "knife",
-    #       "Unarmed" = "unarmed"
-    #     ),
-    #     selected = 1
-    #   )
-    # )
     ),
 
     mainPanel(
@@ -97,10 +72,12 @@ ui <- fluidPage(
         plotOutput("bodyCamPlot")
       ),
      leafletOutput("map"), 
-     #tableOutput("table")
     )
+  )
   ),
   
+  column(
+    width = 8,
   sidebarLayout(
     sidebarPanel(
       
@@ -118,5 +95,46 @@ ui <- fluidPage(
     mainPanel(
       leafletOutput("map")
     )
+  ), 
+  
+  
+  sidebarLayout(
+    sidebarPanel(
+      tabPanel(
+        "Variable Selection",
+        selectInput(
+          "variable",
+          "Select variable to summarize:",
+          choices = c(
+            "Threat Type" = "threat_type",
+            "Flee Status" = "flee_status",
+            "Armed With" = "armed_with",
+            "Age" = "age",
+            "Gender" = "gender",
+            "Race" = "race",
+            "Mental Illness Related" = "was_mental_illness_related",
+            "Body Camera" = "body_camera",
+            "Gun" = "gun",
+            "Replica" = "replica",
+            "Knife" = "knife",
+            "Unarmed" = "unarmed"
+          ),
+          selected = 1
+        )
+      )
+    ), 
+    
+    mainPanel(
+      card(
+      card_header("Summary Table"),
+      tableOutput("table")
+      
+    )
+    
+    
+    )
+  )
+  )
   )
 )
+

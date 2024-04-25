@@ -59,7 +59,7 @@ ui <- page_fillable(
       ),
       plotOutput("bodyCamPlot"),
       plotOutput("racePlot")
-    ),
+    )
     
     
   ),
@@ -79,41 +79,47 @@ ui <- page_fillable(
         )
       ),
       leafletOutput("map")
-    ),
+    )
     
-  )
+  ), 
   
+  
+  tabPanel("Summary Table",
+  card(
+    card_header("Summary Table"), 
+    layout_sidebar(
+      sidebar = sidebar(
+        selectInput(
+          "variable", 
+          "Variable Selection", 
+          choices = list(
+                   "Threat Type" = "threat_type",
+                   "Flee Status" = "flee_status",
+                   "Armed With" = "armed_with",
+                   "City" = "city",
+                   "State" = "state",
+                   "County" = "county",
+                   "Age" = "age",
+                   "Gender" = "gender",
+                   "Race" = "race",
+                   "Mental Illness Related" = "was_mental_illness_related",
+                   "Body Camera" = "body_camera",
+                   "Gun" = "gun",
+                   "Replica" = "replica",
+                   "Knife" = "knife",
+                   "Unarmed" = "unarmed"), 
+            selected = 1
+         )
+         
+        ),
+    
+      tableOutput("table") 
+
+    ) 
   )
+))
   
 
-    # tabPanel(
-    #   "Variable Selection",
-    #   selectInput(
-    #     "variable",
-    #     "Select variable to summarize:",
-    #     choices = c(
-    #       "Threat Type" = "threat_type",
-    #       "Flee Status" = "flee_status",
-    #       "Armed With" = "armed_with",
-    #       "City" = "city",
-    #       "State" = "state",
-    #       "County" = "county",
-    #       "Age" = "age",
-    #       "Gender" = "gender",
-    #       "Race" = "race",
-    #       "Mental Illness Related" = "was_mental_illness_related",
-    #       "Body Camera" = "body_camera",
-    #       "Gun" = "gun",
-    #       "Replica" = "replica",
-    #       "Knife" = "knife",
-    #       "Unarmed" = "unarmed"
-    #     ),
-    #     selected = 1
-    #   )
-    # )
-
-
-
-     #tableOutput("table")
+  
 
   
