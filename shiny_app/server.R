@@ -178,28 +178,110 @@ server <- function(input, output) {
   
   
   
-  # start leaflet plot
   
-    map_df = reactive({
+  
+  
+  ## Leaflet plot
+  
+  # Create a reactive dataframe from the sampled shootings
+  map_df = reactive({
 
     shootings_sample %>%
+      
+      # Create indicator saying how many of the weapons the shooting involved
       mutate(valid_shooting = rowSums(across(all_of(input$weapon)))) %>% 
+      
+      # Only include shootings that involved the selected weapon(s)
       filter(valid_shooting >= 1) 
       
   })
   
+  # Create a reactive dataframe for the states themselves
   state_df = reactive({
     
-    
-    shootings %>%
+    # Start with the shootings + state geometry data
+    full_data %>%
+      
+      # Again, filter to only those involving the weapons of interest
       mutate(valid_shooting = rowSums(across(all_of(input$weapon)))) %>% 
       filter(valid_shooting >= 1) %>% 
-      inner_join(state_info, by = "state") %>% 
-      inner_join(spData::us_states, by = "NAME") %>% 
+      
+      # Within each state
       group_by(state) %>% 
+      
+      # Calculate the number of shootings per person in the state
+      # (Using 2015 population estimates)
       mutate(shoot_per_cap = n() / total_pop_15) %>% 
+      
+      # Remove grouping
       ungroup() %>% 
+      
+      # Extract the distinct values for each state, 
+      # shootings per capita, and the geometry
       distinct(NAME, shoot_per_cap, geometry)
+  })
+  
+  # Create leaflet plot
+  output$map <- renderLeaflet({
+    
+    # Create leaflet
+    leaflet() %>%
+      
+      # Add base tiles
+      addTiles() %>%
+      
+      # Add markers to the plot
+      addMarkers(
+        
+        # Make them cluster when you zoom out for clarity
+        clusterOptions = markerClusterOptions(), 
+        
+        # Plot the latitudes from the interactive dataframe
+        lng = map_df()$longitude, 
+        
+        # Plot the longitudes from the interactive dataframe
+        lat = map_df()$latitude, 
+        
+        # Specify the popup information when clicking on shootings
+        popup = str_c("Name: ", 
+                      map_df()$name,
+                      "<br>",
+                      "Date: ",
+                      map_df()$date,
+                      "<br>",
+                      "Weapon: ",
+                      map_df()$armed_with,
+                      "<br>",
+                      "Description: ",
+                      map_df()$threat_description)
+      ) %>% 
+      
+      # Add polygons for each state
+      addPolygons(data = state_df()$geometry,
+                  
+                  # Specify outline and fill options 
+                  color = "#444444", 
+                  weight = 1, 
+                  smoothFactor = 0.5,
+                  opacity = 0.5, 
+                  fillOpacity = 0.5,
+                  
+                  # Popup message when clicking on each state
+                  popup = str_c("State: ",
+                                state_df()$NAME,
+                                "<br>",
+                                "Fatal shootings involving selected weapon(s) per 100,000 residents: ",
+                                round(state_df()$shoot_per_cap * 100000, 2)),
+                  
+                  # Color by shootings per capita involving selected weapon(s)
+                  fillColor = colorQuantile(
+                    "YlOrRd", 
+                    state_df()$shoot_per_cap)(state_df()$shoot_per_cap),
+                  
+                  # Add a white highlight on the border when you hover
+                  highlightOptions = highlightOptions(color = "white",
+                                                      weight = 2,
+                                                      bringToFront = TRUE))
   })
   
   
@@ -248,44 +330,7 @@ server <- function(input, output) {
   #   
   # })
   
-  # Render leaflet map based on selection
-  output$map <- renderLeaflet({
-    
-    leaflet() %>%
-      addTiles() %>% # Add base tiles
-      addMarkers(
-        clusterOptions = markerClusterOptions(), 
-        lng = map_df()$longitude, 
-        lat = map_df()$latitude, 
-        popup = str_c("Name: ", 
-                      map_df()$name,
-                      "<br>",
-                      "Date: ",
-                      map_df()$date,
-                      "<br>",
-                      "Weapon: ",
-                      map_df()$armed_with,
-                      "<br>",
-                      "Description: ",
-                      map_df()$threat_description)
-        ) %>% 
-      addPolygons(data = state_df()$geometry,
-                  color = "#444444", 
-                  weight = 1, 
-                  smoothFactor = 0.5,
-                  opacity = 0.5, 
-                  fillOpacity = 0.5,
-                  popup = str_c("State: ",
-                                state_df()$NAME,
-                                "<br>",
-                                "Fatal shootings involving selected weapon(s) per 100,000 residents: ",
-                                round(state_df()$shoot_per_cap * 100000, 2)),
-                  fillColor = colorQuantile("YlOrRd", 
-                                            state_df()$shoot_per_cap)(state_df()$shoot_per_cap),
-                  highlightOptions = highlightOptions(color = "white",
-                                                      weight = 2,
-                                                      bringToFront = TRUE))
-  })
+
   
   output$table <- renderDataTable({
     datatable(widget_tbl)} 
