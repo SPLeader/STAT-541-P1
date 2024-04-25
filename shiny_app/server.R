@@ -99,9 +99,11 @@ server <- function(input, output) {
         title = str_c("Observed Number of Fatal Shootings by Race (", 
                       input$year,
                       ")"),
+        subtitle = str_c("State: ", input$state),
         fill = ""
       ) +
-      scale_fill_brewer(palette = "Set2")
+      scale_fill_brewer(palette = "Set2") + 
+      theme_minimal()
   },
   res = 96)
   
@@ -172,13 +174,15 @@ server <- function(input, output) {
   # Create a reactive dataframe from the sampled shootings
   map_df = reactive({
 
-    shootings_sample %>%
+    shootings %>%
       
       # Create indicator saying how many of the weapons the shooting involved
       mutate(valid_shooting = rowSums(across(all_of(input$weapon)))) %>% 
       
       # Only include shootings that involved the selected weapon(s)
-      filter(valid_shooting >= 1) 
+      filter(valid_shooting >= 1,
+             
+             year == as.numeric(input$year)) 
       
   })
   
@@ -256,7 +260,7 @@ server <- function(input, output) {
                   popup = str_c("State: ",
                                 state_df()$NAME,
                                 "<br>",
-                                "Fatal shootings involving selected weapon(s) per 100,000 residents: ",
+                                "Fatal shootings per 100,000 residents from 2015-2023: ",
                                 round(state_df()$shoot_per_cap * 100000, 2)),
                   
                   # Color by shootings per capita involving selected weapon(s)
@@ -267,7 +271,7 @@ server <- function(input, output) {
                   # Add a white highlight on the border when you hover
                   highlightOptions = highlightOptions(color = "white",
                                                       weight = 2,
-                                                      bringToFront = TRUE))
+                                                      bringToFront = TRUE)) 
   })
   
   #create function that takes in user input for widget summary table
