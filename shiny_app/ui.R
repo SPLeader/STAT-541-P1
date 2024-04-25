@@ -96,7 +96,17 @@ ui <- page_fillable(
                          "Replica" = "replica", 
                          "Unarmed" = "unarmed"),
           selected = 1
-        )
+        ),
+        helpText("Individual data points affected by:",
+                 br(),
+                 "- Year input",
+                 br(),
+                 "- Weapon input",
+                 br()),
+        
+        helpText("State Summaries affected by:",
+                 br(),
+                 "- Weapon input"),
       ),
       leafletOutput("map")
     )
@@ -125,7 +135,7 @@ ui <- page_fillable(
                    "Unarmed" = "unarmed", 
                    "Threat Description" = "threat_description"), 
             selected = 1 ),
-            helpText("Note: Other selected varaibles do not change current selection")
+            helpText("Note: Other selected variables do not change current selection")
          
          
         ),

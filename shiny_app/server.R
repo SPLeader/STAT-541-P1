@@ -171,7 +171,9 @@ server <- function(input, output) {
       # Only include shootings that involved the selected weapon(s)
       filter(valid_shooting >= 1,
              
-             year == as.numeric(input$year)) 
+             year == as.numeric(input$year),
+             
+             (race == input$race | input$race == "All"))
       
   })
   
@@ -183,7 +185,9 @@ server <- function(input, output) {
       
       # Again, filter to only those involving the weapons of interest
       mutate(valid_shooting = rowSums(across(all_of(input$weapon)))) %>% 
-      filter(valid_shooting >= 1) %>% 
+      filter(valid_shooting >= 1,
+             year == as.numeric(input$year),
+             (race == input$race | input$race == "All")) %>% 
       
       # Within each state
       group_by(state) %>% 
