@@ -16,76 +16,50 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
 
 
 # UI definition (remains unchanged)
-ui <- page_fillable(
-  
-  title = "Fatal Police Shootings (since 1/1/2015)",
+ui <- fluidPage(
+  titlePanel(
+    title="Fatal Police Shootings (since 1/1/2015)", 
+    windowTitle="Fatal Police Shootings"),
   
   h6("Data source: ", 
      a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
        "The Washington Post")),
   
-  card(
-    card_header("Race and Weapon"),
-    layout_sidebar(
-      sidebar = sidebar(
-        selectInput(
-          "year", 
-          "Select Year:", 
-          choices = seq(
-            min(shootings$year), 
-            max(shootings$year)
+  sidebarLayout(
+    sidebarPanel(
+      
+      selectInput(
+        "year", 
+        "Select Year:", 
+        choices = seq(
+          min(shootings$year), 
+          max(shootings$year)
           )
         ),
-        
-        selectInput(
-          "state", 
-          "Select State:",
-          choices = c(
-            "All",
-            sort(
-              unique(shootings$state)
+      
+      selectInput(
+        "state", 
+        "Select State:",
+        choices = c(
+          "All",
+          sort(
+            unique(shootings$state)
             )
           )
         ),
-        
-        selectInput(
-          "race", 
-          "Select Race:",
-          choices = c(
-            "All", 
-            unique(shootings$race)
+      
+      selectInput(
+        "race", 
+        "Select Race:",
+        choices = c(
+          "All", 
+          unique(shootings$race)
           )
-        )
-      ),
-      plotOutput("bodyCamPlot"),
-      plotOutput("racePlot")
-    ),
-    
-    
-  ),
-  
-  card(
-    card_header("Leaflet Plot"),
-    layout_sidebar(
-      sidebar = sidebar(
-        checkboxGroupInput(
-          "weapon",
-          "Select all that apply",
-          choices = list("Gun" = "gun", 
-                         "Knife" = "knife", 
-                         "Replica" = "replica", 
-                         "Unarmed" = "unarmed"),
-          selected = 1
-        )
-      ),
-      leafletOutput("map")
-    ),
-    
-  )
-  
-  )
-  
+        ),
 
+
+    
+    
     # tabPanel(
     #   "Variable Selection",
     #   selectInput(
@@ -111,9 +85,38 @@ ui <- page_fillable(
     #     selected = 1
     #   )
     # )
+    ),
 
-
-
+    mainPanel(
+      card(
+        card_header("Race Bar Plot By Weapon"),
+        plotOutput("racePlot")
+      ),
+      card(
+        card_header("Body Cam Plot"),
+        plotOutput("bodyCamPlot")
+      ),
+     leafletOutput("map"), 
      #tableOutput("table")
-
+    )
+  ),
   
+  sidebarLayout(
+    sidebarPanel(
+      
+      checkboxGroupInput(
+        "weapon",
+        "Select all that apply",
+        choices = list("Gun" = "gun", 
+                       "Knife" = "knife", 
+                       "Replica" = "replica", 
+                       "Unarmed" = "unarmed"),
+        selected = 1
+      )
+    ),
+    
+    mainPanel(
+      leafletOutput("map")
+    )
+  )
+)
