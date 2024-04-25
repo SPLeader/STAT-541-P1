@@ -5,8 +5,15 @@ library(dplyr)
 library(tidyverse)
 library(here)
 
+# Read in individual shootings dataframe
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
-  drop_na(longitude, latitude, name) 
+  
+  # Drop any missing values for longitude, latitude, or name
+  drop_na(longitude, latitude, name) %>% 
+  
+  # Add a column containing the year the shooting took place
+  mutate(year = year(ymd(date)))
+
 
 # UI definition (remains unchanged)
 ui <- fluidPage(
@@ -16,13 +23,11 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       
-
-      sliderInput("year", "Select Year:", min = min(as.numeric(shootings$year)), 
-                  max = max(as.numeric(shootings$year)), value = min(shootings$year), step = 1),
+      selectInput("year", "Select Year:", choices = seq(min(shootings$year), max(shootings$year))),
       selectInput("state", "Select State:", choices = c("All", unique(shootings$state))),
-      
+
       selectInput("race", "Select Race:", choices = c("All", unique(shootings$race))),
-      
+
       
       checkboxGroupInput(
         "weapon",
@@ -35,40 +40,44 @@ ui <- fluidPage(
       )
     ,
     
-    tabPanel(
-      "Variable Selection",
-      selectInput(
-        "variable",
-        "Select variable to summarize:",
-        choices = c(
-          "Threat Type" = "threat_type",
-          "Flee Status" = "flee_status",
-          "Armed With" = "armed_with",
-          "City" = "city",
-          "State" = "state",
-          "County" = "county",
-          "Age" = "age",
-          "Gender" = "gender",
-          "Race" = "race",
-          "Mental Illness Related" = "was_mental_illness_related",
-          "Body Camera" = "body_camera",
-          "Gun" = "gun",
-          "Replica" = "replica",
-          "Knife" = "knife",
-          "Unarmed" = "unarmed"
-        ),
-        selected = 1
-      )
-    )
-    
-    )
-  
-    
+    # tabPanel(
+    #   "Variable Selection",
+    #   selectInput(
+    #     "variable",
+    #     "Select variable to summarize:",
+    #     choices = c(
+    #       "Threat Type" = "threat_type",
+    #       "Flee Status" = "flee_status",
+    #       "Armed With" = "armed_with",
+    #       "City" = "city",
+    #       "State" = "state",
+    #       "County" = "county",
+    #       "Age" = "age",
+    #       "Gender" = "gender",
+    #       "Race" = "race",
+    #       "Mental Illness Related" = "was_mental_illness_related",
+    #       "Body Camera" = "body_camera",
+    #       "Gun" = "gun",
+    #       "Replica" = "replica",
+    #       "Knife" = "knife",
+    #       "Unarmed" = "unarmed"
+    #     ),
+    #     selected = 1
+    #   )
+    # )
+    ),
+
     mainPanel(
-     plotOutput("racePlot"),
-     plotOutput("bodyCamPlot"),
+      card(
+        card_header("Race Bar Plot By Weapon"),
+        plotOutput("racePlot")
+      ),
+      card(
+        card_header("Body Cam Plot"),
+        plotOutput("bodyCamPlot")
+      ),
      leafletOutput("map"), 
-     tableOutput("table")
+     #tableOutput("table")
     )
   )
 )

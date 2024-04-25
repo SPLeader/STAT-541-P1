@@ -18,7 +18,7 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
   drop_na(longitude, latitude, name) %>% 
   
   # Add a column containing the year the shooting took place
-  mutate(year = as.character(year(ymd(date))))
+  mutate(year = year(ymd(date)))
 
 # Choose subsample of shootings to plot on map 
 # (too many individual points creates a rendering issue)
@@ -153,50 +153,50 @@ server <- function(input, output) {
   })
   
   
-  widget_tbl = reactive({
-    selected <- input$variable
-    selecteddf <- shootings %>%
-      select(threat_type,
-             flee_status,
-             armed_with,
-             city,
-             state,
-             county,
-             age,
-             gender,
-             race,
-             was_mental_illness_related,
-             body_camera,
-             gun,
-             replica,
-             knife,
-             unarmed, 
-      )
-    
-    if(selected %in% c("threat_type", "flee_status", "armed_with", "city", "state", "county", "gender", "race"))
-      
-    {
-      summary <- selecteddf %>%
-        group_by(!!sym(selected)) %>%
-        summarise(n = n()) %>%
-        mutate(freq = n/sum(n))
-      
-    }
-    
-    
-    else {
-      summary <- selecteddf %>%
-        summarise(across(
-          .cols = selected, 
-          .fns = list(Mean = mean, SD = sd), na.rm = TRUE
-        ))
-      
-    }
-    
-    summary <- data.frame(summary)
-    return(summary)
-    
-  })
+  # widget_tbl = reactive({
+  #   selected <- input$variable
+  #   selecteddf <- shootings %>%
+  #     select(threat_type,
+  #            flee_status,
+  #            armed_with,
+  #            city,
+  #            state,
+  #            county,
+  #            age,
+  #            gender,
+  #            race,
+  #            was_mental_illness_related,
+  #            body_camera,
+  #            gun,
+  #            replica,
+  #            knife,
+  #            unarmed, 
+  #     )
+  #   
+  #   if(selected %in% c("threat_type", "flee_status", "armed_with", "city", "state", "county", "gender", "race"))
+  #     
+  #   {
+  #     summary <- selecteddf %>%
+  #       group_by(!!sym(selected)) %>%
+  #       summarise(n = n()) %>%
+  #       mutate(freq = n/sum(n))
+  #     
+  #   }
+  #   
+  #   
+  #   else {
+  #     summary <- selecteddf %>%
+  #       summarise(across(
+  #         .cols = selected, 
+  #         .fns = list(Mean = mean, SD = sd), na.rm = TRUE
+  #       ))
+  #     
+  #   }
+  #   
+  #   summary <- data.frame(summary)
+  #   return(summary)
+  #   
+  # })
   
   # Render leaflet map based on selection
   output$map <- renderLeaflet({
