@@ -44,7 +44,6 @@ full_data <- spData::us_states %>%
   # Add in shootings data
   inner_join(shootings, by = "state")
 
-
 # Server logic
 server <- function(input, output) {
 
@@ -99,12 +98,12 @@ server <- function(input, output) {
         y = "",
         title = "Observed Number of Fatal Shootings by Race",
         fill = ""
-      )
+      ) +
+      scale_fill_brewer(palette = "Set2")
   },
   res = 96)
   
-  
-
+ 
   ## Body Cam Plot
   
   # Filter dataset according to input
@@ -142,20 +141,24 @@ server <- function(input, output) {
       # Get count of each unique combo
       summarise(count = n())
     
+    
     # Create plot
     plot_data %>%
       ggplot(
         aes(
-          x = year, 
+          x = as.numeric(year), 
           y = count,  
           color = body_camera)) +
       geom_line(size = 1) +
+      scale_x_continuous(breaks = seq(min(plot_data$year), 
+                                      max(plot_data$year), by = 1)) +
       labs(
         x = "Year", 
         y = "",
         color = "Body Camera Presence",
-        title = "Count of Body Cameras in Fatal Police Shootings Over the Years") +
-      theme_minimal()
+        title = "Body Cameras in Fatal Police Shootings Between 2015-2024") +
+      theme_minimal() +
+      scale_color_manual(values = c("red", "blue")) 
   },
   res = 96)
   
