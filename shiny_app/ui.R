@@ -25,7 +25,7 @@ ui <- page_fillable(
        "The Washington Post")),
   fluidRow(
     column(
-      width = 8, 
+      width = 4, 
    card(
     card_header("Race and Weapon"),
     layout_sidebar(
@@ -67,7 +67,7 @@ ui <- page_fillable(
   ),
   
   column(
-    width = 4, 
+    width = 8, 
     card(
     card_header("Leaflet Plot"),
     layout_sidebar(
@@ -98,9 +98,6 @@ ui <- page_fillable(
                    "Threat Type" = "threat_type",
                    "Flee Status" = "flee_status",
                    "Armed With" = "armed_with",
-                   "City" = "city",
-                   "State" = "state",
-                   "County" = "county",
                    "Age" = "age",
                    "Gender" = "gender",
                    "Race" = "race",
