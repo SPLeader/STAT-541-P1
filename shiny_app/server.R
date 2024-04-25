@@ -44,14 +44,6 @@ full_data <- spData::us_states %>%
   # Add in shootings data
   inner_join(shootings, by = "state")
 
-
-
-
-
-
-
-
-
 # Server logic
 server <- function(input, output) {
 
@@ -111,12 +103,7 @@ server <- function(input, output) {
   },
   res = 96)
   
-  
-  
-  
-  
-  
-  
+ 
   ## Body Cam Plot
   
   # Filter dataset according to input
@@ -174,9 +161,6 @@ server <- function(input, output) {
       scale_color_manual(values = c("red", "blue")) 
   },
   res = 96)
-  
-  
-  
   
   
   
@@ -283,65 +267,50 @@ server <- function(input, output) {
                                                       bringToFront = TRUE))
   })
   
+  #create function that takes in user input for widget summary table
   
-  # widget_tbl = reactive({
-  #   selected <- input$variable
-  #   selecteddf <- shootings %>%
-  #     select(threat_type,
-  #            flee_status,
-  #            armed_with,
-  #            city,
-  #            state,
-  #            county,
-  #            age,
-  #            gender,
-  #            race,
-  #            was_mental_illness_related,
-  #            body_camera,
-  #            gun,
-  #            replica,
-  #            knife,
-  #            unarmed, 
-  #     )
-  #   
-  #   if(selected %in% c("threat_type", "flee_status", "armed_with", "city", "state", "county", "gender", "race"))
-  #     
-  #   {
-  #     summary <- selecteddf %>%
-  #       group_by(!!sym(selected)) %>%
-  #       summarise(n = n()) %>%
-  #       mutate(freq = n/sum(n))
-  #     
-  #   }
-  #   
-  #   
-  #   else {
-  #     summary <- selecteddf %>%
-  #       summarise(across(
-  #         .cols = selected, 
-  #         .fns = list(Mean = mean, SD = sd), na.rm = TRUE
-  #       ))
-  #     
-  #   }
-  #   
-  #   summary <- data.frame(summary)
-  #   return(summary)
-  #   
-  # })
+  widget_tbl = reactive({
+    selected <- input$variable
   
 
-  
-  output$table <- renderDataTable({
-    datatable(widget_tbl)} 
+    #if numerical variables age is selected, perform numerical summary
     
-    # row.name = TRUE, 
-    # digits = 2, 
-    # striped = TRUE, 
-    # bordered = TRUE, 
-    # hover = TRUE
-    
-  )
+    if(selected %in% c("age"))
+      
+    {
+      summary <- selecteddf %>%
+        mean(age)
+    }
+
+  
+    #if categorical variables are selected perform categorical summary
+
+    else 
+      
+    {
+      summary <- selecteddf %>%
+        group_by(!!sym(selected)) %>%
+        summarise(n = n()) %>%
+        mutate(freq = n/sum(n))
+      
+    }
+
+    summary_df <- as.data.frame(summary)
+    colnames(summary_df) <- c(selected, "Count", "Frequency")
+    return(summary_df)
+
+  })
+  
+  output$table <- renderTable({
+  
+    widget_tbl() }, 
+    striped = TRUE, 
+    hover = TRUE, 
+    bordered = TRUE, 
+    digits = 2
+  
+
+)
   
   
-  
-}
+}  

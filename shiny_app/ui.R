@@ -23,8 +23,10 @@ ui <- page_fillable(
   h6("Data source: ", 
      a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
        "The Washington Post")),
-  
-  card(
+  fluidRow(
+    column(
+      width = 4, 
+   card(
     card_header("Race and Weapon"),
     layout_sidebar(
       sidebar = sidebar(
@@ -59,12 +61,14 @@ ui <- page_fillable(
       ),
       plotOutput("bodyCamPlot"),
       plotOutput("racePlot")
-    ),
-    
-    
+    )
+   )
+   
   ),
   
-  card(
+  column(
+    width = 8, 
+    card(
     card_header("Leaflet Plot"),
     layout_sidebar(
       sidebar = sidebar(
@@ -79,41 +83,44 @@ ui <- page_fillable(
         )
       ),
       leafletOutput("map")
-    ),
+    )
+   
+ ), 
+  
+   card(
+    card_header("Summary Table"), 
+    layout_sidebar(
+      sidebar = sidebar(
+        selectInput(
+          "variable", 
+          "Variable Selection", 
+          choices = list(
+                   "Threat Type" = "threat_type",
+                   "Flee Status" = "flee_status",
+                   "Armed With" = "armed_with",
+                   "Age" = "age",
+                   "Gender" = "gender",
+                   "Race" = "race",
+                   "Mental Illness Related" = "was_mental_illness_related",
+                   "Body Camera" = "body_camera",
+                   "Gun" = "gun",
+                   "Replica" = "replica",
+                   "Knife" = "knife",
+                   "Unarmed" = "unarmed"), 
+            selected = 1
+         )
+         
+        ),
     
+      tableOutput("table") 
+
+      ) 
+     )
+    )
   )
+)
   
-  )
+
   
-
-    # tabPanel(
-    #   "Variable Selection",
-    #   selectInput(
-    #     "variable",
-    #     "Select variable to summarize:",
-    #     choices = c(
-    #       "Threat Type" = "threat_type",
-    #       "Flee Status" = "flee_status",
-    #       "Armed With" = "armed_with",
-    #       "City" = "city",
-    #       "State" = "state",
-    #       "County" = "county",
-    #       "Age" = "age",
-    #       "Gender" = "gender",
-    #       "Race" = "race",
-    #       "Mental Illness Related" = "was_mental_illness_related",
-    #       "Body Camera" = "body_camera",
-    #       "Gun" = "gun",
-    #       "Replica" = "replica",
-    #       "Knife" = "knife",
-    #       "Unarmed" = "unarmed"
-    #     ),
-    #     selected = 1
-    #   )
-    # )
-
-
-
-     #tableOutput("table")
 
   
