@@ -305,9 +305,14 @@ server <- function(input, output) {
       summary <- shootings %>%
         group_by(!!sym(selected)) %>%
         summarise(n = n()) %>%
-        mutate(freq = n/sum(n))
+        mutate(freq = round(n/sum(n) * 100, 2))
       
       summary <- as.data.frame(summary)
+      
+      selected = selected %>% 
+        str_replace_all("_", " ") %>% 
+        str_to_title()
+      
       colnames(summary) <- c(selected, "Count", "Percent of Total")
       
       
