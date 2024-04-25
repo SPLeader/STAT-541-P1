@@ -219,6 +219,10 @@ server <- function(input, output) {
     # Create leaflet
     leaflet() %>%
       
+      #set view to center on united states when app opens
+      
+      setView(lng = -98.5833, lat = 39.8333, zoom = 3) %>%
+      
       # Add base tiles
       addTiles() %>%
       
