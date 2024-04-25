@@ -4,6 +4,7 @@ library(leaflet)
 library(dplyr)
 library(tidyverse)
 library(here)
+library(sf)
 
 # Create a dataframe with state information from prebuilt R vectors
 state_info <- data.frame(
@@ -28,21 +29,32 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
 # UI definition (remains unchanged)
 ui <- page_fillable(
   
-  title = "Fatal Police Shootings (since 1/1/2015)",
   theme = bs_theme(preset = "lux"),
   
   #add theme and reference data source
-  
-  h6("Data source: ", 
-     a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
-       "The Washington Post")),
+  card(
+    min_height = 250,
+    card_header("Fatal Police Shootings (since 1/1/2015)"),
+    h6("Data source: ", 
+       a(href = "https://www.washingtonpost.com/graphics/investigations/police-shootings-database/", 
+         "The Washington Post")),
+    
+    "Authors: Sean Leader, Rebecca Ioffe, and Ashley Ibarra",
+    br(),
+    br(),
+    "This interactive application allows you to explore data on shootings in the United States of America from 2015 to 2023. ",
+    br(),
+    br(),
+    "Created for STAT 541 - Advanced Statistical Computing with R at Cal Poly SLO, 2024."
+    
+  ),
   
   fluidRow(
     column(
       width = 6, 
    card(
      min_height = 1200,
-    card_header("Race and Weapon"),
+    card_header("Line and Bar plots showing aggregated statistics"),
     layout_sidebar(
       sidebar = sidebar(
         selectInput(
@@ -50,7 +62,7 @@ ui <- page_fillable(
           "Select Year:", 
           choices = seq(
             min(shootings$year), 
-            max(shootings$year)
+            max(shootings$year) - 1
           )
         ),
         
@@ -85,7 +97,7 @@ ui <- page_fillable(
     width = 6, 
     card(
       min_height = 600,
-    card_header("Map of Fatal Shootings across the United States in selected year"),
+    card_header("Map of Fatal Shootings across the United States"),
     layout_sidebar(
       sidebar = sidebar(
         checkboxGroupInput(
@@ -97,16 +109,9 @@ ui <- page_fillable(
                          "Unarmed" = "unarmed"),
           selected = 1
         ),
-        helpText("Individual data points affected by:",
-                 br(),
-                 "- Year input",
-                 br(),
-                 "- Weapon input",
-                 br()),
+        helpText("Note: Map sensitive to input variables other than state."),
         
-        helpText("State Summaries affected by:",
-                 br(),
-                 "- Weapon input"),
+       
       ),
       leafletOutput("map")
     )
@@ -115,7 +120,7 @@ ui <- page_fillable(
   
    card(
      min_height = 600,
-    card_header("Overall Summary Table for Selected Variable"), 
+    card_header("Summary Table for Selected Variable"), 
 
     layout_sidebar(
       sidebar = sidebar(
@@ -135,7 +140,7 @@ ui <- page_fillable(
                    "Unarmed" = "unarmed", 
                    "Threat Description" = "threat_description"), 
             selected = 1 ),
-            helpText("Note: Other selected variables do not change current selection")
+            helpText("Note: Table sensitive to input variables other than weapon.")
          
          
         ),

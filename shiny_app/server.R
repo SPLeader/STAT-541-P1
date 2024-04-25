@@ -71,8 +71,8 @@ server <- function(input, output) {
       
       # Create segmented bar chart by race and weapon
       ggplot(aes(
-        x = fct_reorder(race, n), 
-        y = n, 
+        x = n,
+        y = fct_reorder(race, n), 
         fill = Weapon
       )) + 
       
@@ -81,7 +81,7 @@ server <- function(input, output) {
       
       # Add axis labels
       labs(
-        x = "Race of Victim",
+        x = "Number of Fatal Shootings",
         y = "",
         title = str_c("Observed Number of Fatal Shootings by Race (", 
                       input$year,
@@ -92,7 +92,7 @@ server <- function(input, output) {
       scale_fill_brewer(palette = "Set2") + 
       theme_minimal()
   },
-  res = 96)
+  res = 120)
   
  
   ## Body Cam Plot
@@ -154,7 +154,7 @@ server <- function(input, output) {
       theme_minimal() +
       scale_color_manual(values = c("red", "blue")) 
   },
-  res = 96)
+  res = 120)
   
   
   
@@ -194,14 +194,15 @@ server <- function(input, output) {
       
       # Calculate the number of shootings per person in the state
       # (Using 2015 population estimates)
-      mutate(shoot_per_cap = n() / total_pop_15) %>% 
+      mutate(shoot_per_cap = n() / total_pop_15,
+             n = n()) %>% 
       
       # Remove grouping
       ungroup() %>% 
       
       # Extract the distinct values for each state, 
       # shootings per capita, and the geometry
-      distinct(NAME, shoot_per_cap, geometry)
+      distinct(NAME, shoot_per_cap, geometry, n)
   })
   
   # Create leaflet plot
@@ -230,8 +231,8 @@ server <- function(input, output) {
         lat = map_df()$latitude, 
         
         # Specify the popup information when clicking on shootings
-        popup = str_c("Name: ", 
-                      map_df()$NAME,
+        popup = str_c("Victim Name: ", 
+                      map_df()$name,
                       "<br>",
                       "Date: ",
                       map_df()$date,
@@ -257,8 +258,13 @@ server <- function(input, output) {
                   popup = str_c("State: ",
                                 state_df()$NAME,
                                 "<br>",
-                                "Fatal shootings per 100,000 residents from 2015-2023: ",
-                                round(state_df()$shoot_per_cap * 100000, 2)),
+                                str_c(
+                                "Fatal shootings of ",
+                                input$race,
+                                " victims per million residents in ",
+                                input$year,
+                                ": ",
+                                round(state_df()$shoot_per_cap * 1000000, 2))),
                   
                   # Color by shootings per capita involving selected weapon(s)
                   fillColor = colorQuantile(
@@ -276,13 +282,16 @@ server <- function(input, output) {
   widget_tbl = reactive({
     selected <- input$variable
   
-
+    summary <- shootings %>% 
+      filter(year == as.numeric(input$year),
+             (race == input$race | input$race == "All"),
+             (NAME == input$NAME | input$NAME == "All"))
     #if numerical variables age is selected, perform numerical five number summary
     
     if(selected %in% c("age"))
       
     {
-      summary <- shootings %>%
+      summary <- summary %>%
         summarize(`Mean Age` = mean(age, na.rm = TRUE),
                   `SD Age` = sd(age, na.rm = TRUE), 
                   `IQR Age` = IQR(age, na.rm = TRUE), 
@@ -297,7 +306,7 @@ server <- function(input, output) {
     else 
       
     {
-      summary <- shootings %>%
+      summary <- summary %>%
         group_by(!!sym(selected)) %>%
         summarise(n = n()) %>%
         mutate(freq = round(n/sum(n) * 100, 2))
