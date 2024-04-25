@@ -109,20 +109,3 @@ shootings_clean %>%
   write_csv(here("data", "shootings_clean.csv"))
 ```
 
-```{r}
-
-selecteddf <- shootings_clean %>%
-      select(threat_type,
-             flee_status,
-             armed_with,
-             age,
-             gender,
-             race,
-             was_mental_illness_related,
-             body_camera,
-             gun,
-             replica,
-             knife,
-             unarmed
-      )
-```

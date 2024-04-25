@@ -44,6 +44,22 @@ full_data <- spData::us_states %>%
   # Add in shootings data
   inner_join(shootings, by = "state")
 
+# Get particular data for table widget
+selecteddf <- shootings %>%
+  select(threat_type,
+         flee_status,
+         armed_with,
+         age,
+         gender,
+         race,
+         was_mental_illness_related,
+         body_camera,
+         gun,
+         replica,
+         knife,
+         unarmed
+  )
+
 # Server logic
 server <- function(input, output) {
 
@@ -279,7 +295,8 @@ server <- function(input, output) {
       
     {
       summary <- selecteddf %>%
-        mean(age)
+        summarize(`Mean Age` = mean(age, na.rm = TRUE),
+                  `SD Age` = sd(age, na.rm = TRUE))
     }
 
   
@@ -293,11 +310,13 @@ server <- function(input, output) {
         summarise(n = n()) %>%
         mutate(freq = n/sum(n))
       
+      summary <- as.data.frame(summary)
+      colnames(summary) <- c(selected, "Count", "Frequency")
+      
+      
     }
 
-    summary_df <- as.data.frame(summary)
-    colnames(summary_df) <- c(selected, "Count", "Frequency")
-    return(summary_df)
+    return(summary)
 
   })
   
