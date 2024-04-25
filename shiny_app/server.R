@@ -11,6 +11,12 @@ library(ggplot2)
 
 # Read in and clean data
 
+# Create a dataframe with state information from prebuilt R vectors
+state_info <- data.frame(
+  NAME = state.name,
+  state = state.abb
+)
+
 # Read in individual shootings dataframe
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
   
@@ -18,31 +24,12 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
   drop_na(longitude, latitude, name) %>% 
   
   # Add a column containing the year the shooting took place
-  mutate(year = year(ymd(date)))
-
-# Choose subsample of shootings to plot on map 
-# (too many individual points creates a rendering issue)
-shootings_sample  <- shootings %>% 
+  mutate(year = year(ymd(date))) %>% 
   
-  # Take 5% of the shootings from each state (stratified sample)
-  group_by(state) %>% 
-  sample_frac(0.05) %>% 
-  ungroup() 
-
-# Create a dataframe with state information from prebuilt R vectors
-state_info <- data.frame(
-  NAME = state.name,
-  state = state.abb
-)
-
-# Get spatial data for plotting polygons in addition to individual points
-full_data <- spData::us_states %>% 
+  inner_join(state_info, by = "state") %>% 
   
-  # Add this to the state info dataframe (just used to link to shootings)
-  inner_join(state_info, by = "NAME") %>% 
-  
-  # Add in shootings data
-  inner_join(shootings, by = "state")
+  inner_join(spData::us_states, by = "NAME")
+
 
 # Server logic
 server <- function(input, output) {
@@ -52,13 +39,13 @@ server <- function(input, output) {
   output$racePlot <- renderPlot({
     
     # If the person has selected a particular state
-    if(input$state != "All") {
+    if(input$NAME != "All") {
       
       # Filter the data by both year and state
       filtered_data <- shootings %>% 
         filter(
           year == input$year, 
-          state == input$state
+          NAME == input$NAME
         )
     } 
     
@@ -99,7 +86,7 @@ server <- function(input, output) {
         title = str_c("Observed Number of Fatal Shootings by Race (", 
                       input$year,
                       ")"),
-        subtitle = str_c("State: ", input$state),
+        subtitle = str_c("State: ", input$NAME),
         fill = ""
       ) +
       scale_fill_brewer(palette = "Set2") + 
@@ -116,10 +103,10 @@ server <- function(input, output) {
     data <- shootings
     
     # If the user has inputted a state
-    if(input$state != "All") {
+    if(input$NAME != "All") {
       
       # Filter the data to that state
-      data <- filter(data, state == input$state)
+      data <- filter(data, NAME == input$NAME)
     }
     
     # If the user has inputted a race
@@ -161,7 +148,7 @@ server <- function(input, output) {
         x = "Year", 
         y = "",
         color = "Body Camera Presence",
-        title = str_c("Number of Fatal Police Shootings in ", input$state),
+        title = str_c("Number of Fatal Police Shootings in ", input$NAME),
         subtitle = str_c("Filtered to only ", input$race, " victims")
         ) +
       theme_minimal() +
@@ -173,7 +160,7 @@ server <- function(input, output) {
   
   ## Leaflet plot
   
-  # Create a reactive dataframe from the sampled shootings
+  # Create a reactive dataframe from the shootings
   map_df = reactive({
 
     shootings %>%
@@ -192,7 +179,7 @@ server <- function(input, output) {
   state_df = reactive({
     
     # Start with the shootings + state geometry data
-    full_data %>%
+    shootings %>%
       
       # Again, filter to only those involving the weapons of interest
       mutate(valid_shooting = rowSums(across(all_of(input$weapon)))) %>% 
@@ -240,7 +227,7 @@ server <- function(input, output) {
         
         # Specify the popup information when clicking on shootings
         popup = str_c("Name: ", 
-                      map_df()$name,
+                      map_df()$NAME,
                       "<br>",
                       "Date: ",
                       map_df()$date,

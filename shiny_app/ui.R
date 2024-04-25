@@ -5,6 +5,12 @@ library(dplyr)
 library(tidyverse)
 library(here)
 
+# Create a dataframe with state information from prebuilt R vectors
+state_info <- data.frame(
+  NAME = state.name,
+  state = state.abb
+)
+
 # Read in individual shootings dataframe
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
   
@@ -12,7 +18,11 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
   drop_na(longitude, latitude, name) %>% 
   
   # Add a column containing the year the shooting took place
-  mutate(year = year(ymd(date)))
+  mutate(year = year(ymd(date))) %>% 
+  
+  inner_join(state_info, by = "state") %>% 
+  
+  inner_join(spData::us_states, by = "NAME")
 
 
 # UI definition (remains unchanged)
@@ -45,12 +55,12 @@ ui <- page_fillable(
         ),
         
         selectInput(
-          "state", 
+          "NAME", 
           "Select State:",
           choices = c(
             "All",
             sort(
-              unique(shootings$state)
+              unique(shootings$NAME)
             )
           )
         ),
