@@ -61,10 +61,24 @@ server <- function(input, output) {
   
   # Render the race breakdown plot
   output$racePlot <- renderPlot({
+    
+    # If the person has selected a particular state
     if(input$state != "All") {
-      filtered_data <- filter(shootings, year == input$year, state == input$state)
-    } else {
-      filtered_data <- filter(shootings, year == input$year)
+      
+      # Filter the data by both year and state
+      filtered_data <- shootings %>% 
+        filter(
+          year == input$year, 
+          state == input$state
+        )
+    } 
+    
+    # If the person has not yet input a state
+    else {
+      
+      # Filter only using the input year
+      filtered_data <- shootings %>% 
+        filter(year == input$year)
     }
     
     filtered_data %>%
@@ -99,30 +113,67 @@ server <- function(input, output) {
   })
   
   
-  # render the body cam plot
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ## Body Cam Plot
+  
+  # Filter dataset according to input
   filtered_data <- reactive({
+    
     data <- shootings
+    
+    # If the user has inputted a state
     if(input$state != "All") {
+      
+      # Filter the data to that state
       data <- filter(data, state == input$state)
     }
+    
+    # If the user has inputted a race
     if(input$race != "All") {
+      
+      # Filter the data to only that race
       data <- filter(data, race == input$race)
     }
+    
+    # Return data
     data
   })
   
-  # Render the body cam presence plot
+  # Create the plot
   output$bodyCamPlot <- renderPlot({
-    # Group by year and body camera presence, and calculate counts
+    
+    # Use the reactive data using specified inputs
     plot_data <- filtered_data() %>%
+      
+      # Group by year and body camera presence
       group_by(year, body_camera) %>%
+      
+      # Get count of each unique combo
       summarise(count = n())
     
-    # Plotting
-    ggplot(plot_data, aes(x = year, y = count, group = body_camera, color = body_camera)) +
+    # Create plot
+    plot_data %>%
+      ggplot(
+        aes(
+          x = year, 
+          y = count, 
+          group = body_camera, 
+          color = body_camera)) +
       geom_line(size = 1) +
-      labs(x = "Year", y = "Count of Body Cameras", color = "Body Camera Presence",
-           title = "Count of Body Cameras in Fatal Police Shootings Over the Years") +
+      labs(
+        x = "Year", 
+        y = "",
+        color = "Body Camera Presence",
+        title = "Count of Body Cameras in Fatal Police Shootings Over the Years") +
       theme_minimal()
   })
   
