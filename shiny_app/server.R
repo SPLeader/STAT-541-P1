@@ -24,9 +24,9 @@ shootings <- read_csv(here("data", "shootings_clean.csv")) %>%
 # (too many individual points creates a rendering issue)
 shootings_sample  <- shootings %>% 
   
-  # Take 10% of the shootings from each state (stratified sample)
+  # Take 5% of the shootings from each state (stratified sample)
   group_by(state) %>% 
-  sample_frac(0.1) %>% 
+  sample_frac(0.05) %>% 
   ungroup() 
 
 # Create a dataframe with state information from prebuilt R vectors
