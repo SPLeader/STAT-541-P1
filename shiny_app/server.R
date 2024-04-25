@@ -110,7 +110,8 @@ server <- function(input, output) {
         title = "Observed Number of Fatal Shootings by Race",
         fill = ""
       )
-  })
+  },
+  res = 96)
   
   
   
@@ -174,7 +175,8 @@ server <- function(input, output) {
         color = "Body Camera Presence",
         title = "Count of Body Cameras in Fatal Police Shootings Over the Years") +
       theme_minimal()
-  })
+  },
+  res = 96)
   
   
   

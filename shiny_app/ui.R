@@ -53,16 +53,16 @@ ui <- fluidPage(
         ),
 
       
-      checkboxGroupInput(
-        "weapon",
-        "Select all that apply",
-        choices = list("Gun" = "gun", 
-                       "Knife" = "knife", 
-                       "Replica" = "replica", 
-                       "Unarmed" = "unarmed"),
-        selected = 1
-      )
-    ,
+      # checkboxGroupInput(
+      #   "weapon",
+      #   "Select all that apply",
+      #   choices = list("Gun" = "gun", 
+      #                  "Knife" = "knife", 
+      #                  "Replica" = "replica", 
+      #                  "Unarmed" = "unarmed"),
+      #   selected = 1
+      # )
+    
     
     # tabPanel(
     #   "Variable Selection",
@@ -102,6 +102,25 @@ ui <- fluidPage(
       ),
      leafletOutput("map"), 
      #tableOutput("table")
+    )
+  ),
+  
+  sidebarLayout(
+    sidebarPanel(
+      
+      checkboxGroupInput(
+        "weapon",
+        "Select all that apply",
+        choices = list("Gun" = "gun", 
+                       "Knife" = "knife", 
+                       "Replica" = "replica", 
+                       "Unarmed" = "unarmed"),
+        selected = 1
+      )
+    ),
+    
+    mainPanel(
+      leafletOutput("map")
     )
   )
 )
