@@ -6,24 +6,53 @@ library(sf)
 library(dplyr)
 library(ggplot2)
 
+
+
+# Read in and clean data
+
+# Read in individual shootings dataframe
 shootings <- read_csv(here("data", "shootings_clean.csv")) %>% 
-  drop_na(longitude, latitude, name) 
+  
+  # Drop any missing values for longitude, latitude, or name
+  drop_na(longitude, latitude, name) %>% 
+  
+  # Add a column containing the year the shooting took place
+  mutate(year = as.character(year(ymd(date))))
 
-shootings$year <- format(as.Date(shootings$date, format="%d/%m/%Y"),"%Y")
-
+# Choose subsample of shootings to plot on map 
+# (too many individual points creates a rendering issue)
 shootings_sample  <- shootings %>% 
+  
+  # Take 10% of the shootings from each state (stratified sample)
   group_by(state) %>% 
   sample_frac(0.1) %>% 
   ungroup() 
 
+# Create a dataframe with state information from prebuilt R vectors
 state_info <- data.frame(
   NAME = state.name,
   state = state.abb
 )
 
+# Get spatial data for plotting polygons in addition to individual points
 full_data <- spData::us_states %>% 
+  
+  # Add this to the state info dataframe (just used to link to shootings)
   inner_join(state_info, by = "NAME") %>% 
+  
+  # Add in shootings data
   inner_join(shootings, by = "state")
+
+
+
+
+
+
+
+
+
+
+
 
 # Server logic
 server <- function(input, output) {
