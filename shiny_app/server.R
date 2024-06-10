@@ -311,17 +311,20 @@ server <- function(input, output) {
         summarise(n = n()) %>%
         mutate(freq = round(n/sum(n) * 100, 2))
       
-      summary <- as.data.frame(summary)
+      #summary <- as.data.frame(summary)
       
-      selected = selected %>% 
-        str_replace_all("_", " ") %>% 
-        str_to_title()
+     # selected = selected %>% 
+        #str_replace_all("_", " ") %>% 
+       # str_to_title()
       
-      colnames(summary) <- c(selected, "Count", "Percent of Total")
+    #  colnames(summary) <- c(selected, "Count", "Percent of Total")
       
       
     }
 
+    summary <- summary %>% 
+      arrange({{input$sort_column}}, {{input$sort_order}})
+    
     return(summary)
 
   })

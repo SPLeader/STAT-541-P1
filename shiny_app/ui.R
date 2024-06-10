@@ -109,7 +109,7 @@ ui <- page_fillable(
                          "Unarmed" = "unarmed"),
           selected = 1
         ),
-        helpText("Note: Map sensitive to input variables other than state."),
+        helpText("Note: Map sensitive to input variables other than state.")
         
        
       ),
@@ -140,8 +140,12 @@ ui <- page_fillable(
                    "Unarmed" = "unarmed", 
                    "Threat Description" = "threat_description"), 
             selected = 1 ),
-            helpText("Note: Table sensitive to input variables other than weapon.")
-         
+            helpText("Note: Table sensitive to input variables other than weapon."),
+         selectInput(
+          "sort_order", 
+          "Sort Order:", 
+          choices = c("Ascending", "Descending"),
+          selected = "Ascending"
          
         ),
     
