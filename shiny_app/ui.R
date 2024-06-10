@@ -5,6 +5,7 @@ library(dplyr)
 library(tidyverse)
 library(here)
 library(sf)
+library(plotly)
 
 # Create a dataframe with state information from prebuilt R vectors
 state_info <- data.frame(
@@ -109,7 +110,7 @@ ui <- page_fillable(
                          "Unarmed" = "unarmed"),
           selected = 1
         ),
-        helpText("Note: Map sensitive to input variables other than state."),
+        helpText("Note: Map sensitive to input variables other than state.")
         
        
       ),
@@ -141,7 +142,6 @@ ui <- page_fillable(
                    "Threat Description" = "threat_description"), 
             selected = 1 ),
             helpText("Note: Table sensitive to input variables other than weapon.")
-         
          
         ),
     
