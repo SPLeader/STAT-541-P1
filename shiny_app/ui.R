@@ -5,6 +5,7 @@ library(dplyr)
 library(tidyverse)
 library(here)
 library(sf)
+library(plotly)
 
 # Create a dataframe with state information from prebuilt R vectors
 state_info <- data.frame(
@@ -140,12 +141,7 @@ ui <- page_fillable(
                    "Unarmed" = "unarmed", 
                    "Threat Description" = "threat_description"), 
             selected = 1 ),
-            helpText("Note: Table sensitive to input variables other than weapon."),
-         selectInput(
-          "sort_order", 
-          "Sort Order:", 
-          choices = c("Ascending", "Descending"),
-          selected = "Ascending"
+            helpText("Note: Table sensitive to input variables other than weapon.")
          
         ),
     

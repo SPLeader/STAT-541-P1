@@ -5,6 +5,7 @@ library(here)
 library(sf)
 library(dplyr)
 library(ggplot2)
+library(plotly)
 
 
 
@@ -121,8 +122,10 @@ server <- function(input, output) {
   })
   
   # Create the plot
-  output$bodyCamPlot <- renderPlot({
-    
+
+
+  
+  output$bodyCamPlot <- renderPlotly({
     # Use the reactive data using specified inputs
     plot_data <- filtered_data() %>%
       
@@ -132,29 +135,23 @@ server <- function(input, output) {
       # Get count of each unique combo
       summarise(count = n())
     
-    
     # Create plot
-    plot_data %>%
-      ggplot(
-        aes(
-          x = as.numeric(year), 
-          y = count,  
-          color = body_camera)) +
-      geom_line(size = 1) +
-      scale_x_continuous(breaks = seq(min(plot_data$year), 
-                                      max(plot_data$year), by = 1)) +
-      geom_vline(xintercept = as.numeric(input$year)) +
-      labs(
-        x = "Year", 
-        y = "",
-        color = "Body Camera Presence",
+    plot_ly(data = plot_data, x = ~as.numeric(year), y = ~count, color = ~body_camera, type = 'scatter', mode = 'lines') %>%
+      layout(
+        xaxis = list(title = "Year", tickmode = "linear", tick0 = min(plot_data$year), dtick = 1),
+        yaxis = list(title = ""),
         title = str_c("Number of Fatal Police Shootings in ", input$NAME),
-        subtitle = str_c("Filtered to only ", input$race, " victims")
-        ) +
-      theme_minimal() +
-      scale_color_manual(values = c("red", "blue")) 
-  },
-  res = 120)
+        subtitle = str_c("Filtered to only ", input$race, " victims"),
+        showlegend = TRUE,
+        legend = list(title = "Body Camera Presence"),
+        plot_bgcolor = "white",
+        legend_bgcolor = "white"
+      ) %>%
+      add_markers() %>%
+      layout(
+        colorway = c("red", "blue")
+      )
+  })
   
   
   
@@ -311,19 +308,18 @@ server <- function(input, output) {
         summarise(n = n()) %>%
         mutate(freq = round(n/sum(n) * 100, 2))
       
-      #summary <- as.data.frame(summary)
+      summary <- as.data.frame(summary)
       
-     # selected = selected %>% 
-        #str_replace_all("_", " ") %>% 
-       # str_to_title()
+      selected = selected %>% 
+        str_replace_all("_", " ") %>% 
+        str_to_title()
       
-    #  colnames(summary) <- c(selected, "Count", "Percent of Total")
+      colnames(summary) <- c(selected, "Count", "Percent of Total")
       
       
     }
 
-    summary <- summary %>% 
-      arrange({{input$sort_column}}, {{input$sort_order}})
+
     
     return(summary)
 
